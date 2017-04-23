@@ -47,8 +47,13 @@
         width="120">
       </el-table-column>
       <el-table-column
+        prop="tl_pn"
+        label="工具件号"
+        width="120">
+      </el-table-column>
+      <el-table-column
         prop="u_name"
-        label="借用人">
+        label="借用人"width="120">
       </el-table-column>
       <el-table-column
         prop="borrow_admin"
@@ -60,71 +65,7 @@
         show-overflow-tooltip>
       </el-table-column>
     </el-table>
-    <!--<el-table v-if="tableShow"-->
-    <!--:data="this.$store.state.res.borrowTools"-->
-    <!--style="width: 100%">-->
-    <!--<el-table-column type="expand">-->
-    <!--<template scope="props">-->
-    <!--<el-form label-position="left" inline class="demo-table-expand">-->
-    <!--<el-form-item label="工具名称">-->
-    <!--<span>{{ props.row.tl_name }}</span>-->
-    <!--</el-form-item>-->
-    <!--<el-form-item label="工具件号">-->
-    <!--<span>{{ props.row.tl_pn }}</span>-->
-    <!--</el-form-item>-->
-    <!--<el-form-item label="条码号">-->
-    <!--<span>{{ props.row.tl_barcode }}</span>-->
-    <!--</el-form-item>-->
-    <!--<el-form-item label="架位">-->
-    <!--<span>{{ props.row.tl_position }}</span>-->
-    <!--</el-form-item>-->
-    <!--<el-form-item label="类型">-->
-    <!--<span>{{ props.row.tl_type }}</span>-->
-    <!--</el-form-item>-->
-    <!--<el-form-item label="状态">-->
-    <!--<span>{{ props.row.tl_status }}</span>-->
-    <!--</el-form-item>-->
-    <!--<el-form-item label="规格">-->
-    <!--<span>{{ props.row.tl_standard }}</span>-->
-    <!--</el-form-item>-->
-    <!--</el-form>-->
-    <!--</template>-->
-    <!--</el-table-column>-->
-    <!--<el-table-column-->
-    <!--label="条码"-->
-    <!--prop="tl_barcode">-->
-    <!--</el-table-column>-->
-    <!--<el-table-column-->
-    <!--label="工具名称"-->
-    <!--prop="tl_name">-->
-    <!--</el-table-column>-->
-    <!--<el-table-column-->
-    <!--label="架位"-->
-    <!--prop="tl_position">-->
-    <!--</el-table-column>-->
-    <!--<el-table-column-->
-    <!--label="借用人"-->
-    <!--prop="tl_pn">-->
-    <!--</el-table-column>-->
-    <!--<el-table-column-->
-    <!--label="借出管理员"-->
-    <!--prop="tl_pn">-->
-    <!--</el-table-column>-->
-    <!--</el-table>-->
 
-    <!--还回人信息输入框-->
-    <el-dialog title="还回人工号" v-model="reJobNumber">
-      <el-form :model="reInfo">
-        <el-form-item label="还回人工号" :label-width="formLabelWidth">
-          <el-input v-model="reInfo.jn" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="reJobNumber = false">取 消</el-button>
-        <el-button type="primary" @click="getJobNumber">确 定</el-button>
-      </div>
-    </el-dialog>
 
     <!--借用人信息输入框-->
     <el-dialog title="借用人工号" v-model="boJobNumber">
@@ -141,45 +82,17 @@
     </el-dialog>
 
 
-    <el-dialog title="工具条码扫描" v-model="barCodeScaner">
-      <el-form :model="barCode">
-        <el-form-item label="工具条码" :label-width="formLabelWidth">
-          <el-input v-model="barCode.bc" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="barCodeScaner = false">取 消</el-button>
-        <el-button type="primary" @click="barCodeScaner = false">确 定</el-button>
-      </div>
-    </el-dialog>
-
     <el-row type="flex" justify="space-around">
       <el-col :span="6">
-        <el-button type="primary" :plain="true" class="mcy-marginRight mcy-margin-top10" :disabled="showReUjn"
-                   @click="reJobNumber = true">
-          还回人
-        </el-button>
-      </el-col>
-      <el-col :span="6">
-        <el-button type="primary" :plain="true" class="mcy-marginRight mcy-margin-top10" :disabled="showBoUjn"
+        <el-button type="primary" :plain="true" class="mcy-marginRight mcy-margin-top10"
                    @click="boJobNumber = true">
-          按借用人
+          借用人
         </el-button>
       </el-col>
+
       <el-col :span="6">
-        <el-button type="primary" :plain="true" class="mcy-marginRight mcy-margin-top10" @click="barCodeScaner=true">
-          按条码号
-        </el-button>
-      </el-col>
-      <el-col :span="6">
-        <el-button type="primary" :plain="true" class="mcy-marginRight mcy-margin-top10" @click="barCodeScaner=true">
-          按借单号
-        </el-button>
-      </el-col>
-      <el-col :span="6">
-        <el-button type="primary" class="mcy-marginRight mcy-margin-top10" :disabled="isClient" @click="returnBarcode">
-          确认还回
+        <el-button type="primary" class="mcy-marginRight mcy-margin-top10" :disabled="isClient" @click="printOk">
+          确认打印
         </el-button>
       </el-col>
     </el-row>
@@ -193,6 +106,7 @@
   var debounce = require('lodash/debounce');
   import Vue from 'vue'
   import VueResource from 'vue-resource';
+  import router from './../../router'
   Vue.use(VueResource);
   export default {
     name: 'returnScan',
@@ -205,8 +119,6 @@
         boJobNumber: false,//控制借用人信息弹出框
         barCodeScaner: false,
         isClient: false,
-        showBoUjn: true,//控制还回人按钮
-        showReUjn: false,
         barCode: {bc: ''},
         reInfo: {
           jn: '' //还回人员工号
@@ -269,52 +181,9 @@
         this.$message.error(str);
       },
 
-      //归还工具业务逻辑
-      returnBarcode(){
-        const reBorrowList = {};
-        reBorrowList.reUjn = this.$store.state.res.reUser.u_jn
-        reBorrowList.date = this.date
-        const reBarcodes = []
-        for (var i = 0; i < this.multipleSelection.length; i++) {
-          reBarcodes.push(this.multipleSelection[i].tl_barcode)
-        }
-        reBorrowList.barcodes = reBarcodes.join(",")
-        //console.log(reBarcodes.join(","))
-        //console.log(this.$store.state.res.reUser.u_jn)
-        this.$http.post('http://www.toolsystem.net/index.php/admin/tool/returntool/',
-          reBorrowList, {emulateHTTP: true, emulateJSON: true}).then((res) => {
-          //成功处理
-          //console.log(res.body)
-          this.openSucces(res.body.data)
-          if (this.$store.state.res.borrowTools.length == this.multipleSelection.length) {
-            this.$store.state.res.borrowTools = []
-          }else {
-            this.getBoJn()
-          }
-          this.$store.state.res.reUser=[]
-          //console.log(res.body)
-        }, res => {
-          //错误处理
-          //this.isClient = false
-          //console.log(res.body.error)
-        })
-
-      },
-      //查询借出工具业务逻辑
-      getBoTool(key){
-        if (key.u_jn) {
-          console.log("按借用人")
-        }
-        if (key.tl_borrow) {
-          console.log("按工具条码")
-        }
-        if (key.borrow_no) {
-          console.log("按借单号")
-        }
-      },
-      //还回选择按借用人时查询借用人信息
       getBoJn(){
         //console.log(this.pInfo.jn)
+        this.getJn()
         if (this.boInfo.jn == null | !this.boInfo.jn) this.boJobNumber = true
         this.$http.get('http://www.toolsystem.net/index.php/admin/borrow/getbouser', {
           params: {
@@ -333,84 +202,47 @@
           this.boJobNumber = false
           this.tableShow = true
           this.showBoUjn = true
+
         }, res => {
           console.log("ajax错误！")
         })
       },
 
+      //确认打印
+      printOk(){
+        router.push({ path: '/printAgain' })
+      },
+
       //还回选择按工具条码
       handleSelectionChange(val) {
         this.multipleSelection = val;
+        this.$store.state.res.handleSelectionChange=val
         console.log(this.multipleSelection)
       },
-      get: _.debounce(function () {
-        if (this.barCode.bc == null | !this.barCode.bc) return
-        this.$http.get('http://www.toolsystem.net/index.php/admin/tool/gettoolbybd/', {
-          params: {
-            tiaoma: this.barCode.bc
-          }
-        }).then(response => {
-          //根据返回的状态码判断 返回的data是否有值
-          if (response.body.code == 400) {
-            this.barCodeScaner = true
-            this.barCode.bc = ''
-            this.openError('错了哦，没有这个条形码或工具')
-            return
-          }
-          console.log(response.body.data[0]['tl_status'])
-          //判断工具状态 状态为1为正常
-          if (response.body.data[0]['tl_status'] == "-1") {
-            this.barCodeScaner = true
-            this.barCode.bc = ''
-            this.openError('该工具R44借出中')
-            return
-          }
-          if (response.body.data[0]['tl_status'] == "0") {
-            this.barCodeScaner = true
-            this.barCode.bc = ''
-            this.openError('该工具状态借出中')
-            return
-          }
-          //console.log(response.body.data[0])
-          this.tools.push(response.body.data[0])//把数据push到tools
-          this.$store.state.res.barcodeTools = this.tools//把数据传到store中
-          this.tableShow = true
-          this.barCodeScaner = true
-          this.barCode.bc = ''
-          this.openSucces('扫描成功！请扫描下一件或点击确定')
-          //console.log(this.tools)
-        }, response => {
-          console.log("ajax请求错误")
-        });
-      }, 1000),
-      getJn: _.debounce(function () {
+      getJn () {
         //console.log(this.pInfo.jn)
-        if (this.reInfo.jn == null | !this.reInfo.jn) this.reJobNumber = false
+        if (this.boInfo.jn == null | !this.boInfo.jn) this.reJobNumber = false
         this.$http.get('http://www.toolsystem.net/index.php/admin/user/getbyujn', {
           params: {
-            jobNumber: this.reInfo.jn
+            jobNumber: this.boInfo.jn
           }
         }).then(res => {
           if (res.body.code == 400) {
-            this.reJobNumber = true
-            this.reInfo.jn = ''
+            this.boJobNumber = true
+            this.boInfo.jn = ''
             this.openError(res.body.error)
             return
           }
-          this.pInfos.push(res.body.data)
-          //console.log(res.body.data)
+
           this.$store.state.res.reUser = res.body.data[0]//data[0]取这个数组的第一个元素
           //console.log(this.$store.state.res.user)
           this.date = new Date().toLocaleString()
           //console.log(this.date)
           //console.log(this.$store.state.res.reUser)
-          this.reJobNumber = false
-          this.showBoUjn = false
-          this.showReUjn = true
         }, res => {
           console.log("ajax错误！")
         })
-      }, 1000),
+      },
     },
     watch: {
       barCode: {

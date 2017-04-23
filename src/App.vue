@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <navbar></navbar>
+    <navbar class="mcy-noprint"></navbar>
     <router-view></router-view>
     <v-footer></v-footer>
   </div>
@@ -19,5 +19,8 @@ export default {
 </script>
 
 <style>
-
+  @import "assets/print.css";
+  .el-table__body-wrapper {
+    overflow: hidden;
+  }
 </style>

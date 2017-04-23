@@ -159,4 +159,7 @@
   .mcy-margin-top10 {
     margin-top: 10px;
   }
+  .el-table__body-wrapper {
+    overflow: hidden;
+  }
 </style>

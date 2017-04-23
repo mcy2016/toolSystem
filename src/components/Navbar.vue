@@ -1,10 +1,12 @@
 <template>
   <div>
     <div class="nav">
-      <div class="logo"><router-link :to="{ path: 'tool' }">LOGO位置</router-link></div>
+      <div class="logo">
+        <router-link :to="{ path: 'tool' }">LOGO位置</router-link>
+      </div>
       <el-menu theme="dark" :default-active="activeIndex" class="el-menu-demo navbar" mode="horizontal"
                @select="handleSelect" router>
-        <el-menu-item class="navbar-item" index="toolBorrow" :route="{name:'toolBorrow'}">工具借还</el-menu-item>
+        <el-menu-item class="navbar-item" index="borrow" :route="{name:'toolBorrow'}">工具借还</el-menu-item>
         <el-menu-item class="navbar-item" index="consumableBorrow" :route="{name:'consumables'}">耗材借还</el-menu-item>
         <el-menu-item class="navbar-item" index="user">用户管理</el-menu-item>
         <el-menu-item class="navbar-item" index="chemicals">航化品</el-menu-item>
@@ -18,12 +20,26 @@
   export default {
     data() {
       return {
-        activeIndex: '0'
+        activeIndex: 'tool'
+      }
+    },
+    created() {
+      // 当created函数时监测路由信息,防止页面刷新tab高亮错误
+      var tmpArr = this.$route.path.split('/')
+      this.handleSelect(tmpArr[1])
+    },
+    // watch函数监测路由的变化,保持tab面板的高亮位置正确
+    watch: {
+      '$route'(to, from) {
+        const path = to.path
+        var tmpArr = path.split('/')
+        this.handleSelect(tmpArr[1])
       }
     },
     methods: {
       handleSelect: function (key, keyPath) {
-        console.log(key, keyPath);
+        this.activeIndex = key;
+        this.$router.push({path: '/'.key})
       }
     }
   }
@@ -31,7 +47,7 @@
 
 <style>
   .nav {
-    background: #324157;
+    background: #318B69;
     width: 100%;
     height: 60px;
     border-radius: 2px;
@@ -61,6 +77,7 @@
     height: 1px;
     background: #e0e6ed;
   }
+
   a:-webkit-any-link {
     color: white;
     text-decoration: none;

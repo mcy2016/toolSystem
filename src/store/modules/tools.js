@@ -7,6 +7,11 @@ export default {
     allTools: [],//所有工具
     barcodeTools:[],//借出的工具
     user:{},//借用工具用户
+    reUser:{},//还回工具用户
+    boUser:{},//保存还回按借用人时的信息
+    borrowTools:[],
+    tlBorcode: '',//保存借单号
+    handleSelectionChange:[]//存在选择的复选框内容
   },
   mutations: {
     setData(state,{key,data}){//更改state的通用函数

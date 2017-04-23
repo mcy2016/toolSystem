@@ -7,11 +7,22 @@ import Borrow from '@/components/Borrow'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
       name: 'Index',
       component: Index
+    },
+    {
+      path: '/print',
+      name: 'print',
+      component: require('./../views/print.vue')
+    },
+    {
+      path: '/printAgain',
+      name: 'printAgain',
+      component: require('./../views/printAgain.vue')
     },
     {
       path: '/tool',
@@ -37,6 +48,11 @@ export default new Router({
           path:'returnScan',
           name:'returnScan',
           component:require('./../views/return/returnScan.vue')
+        },
+        {
+          path:'borrowList',
+          name:'borrowList',
+          component:require('../views/return/borrowList.vue')
         }
       ]
     }
